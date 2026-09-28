@@ -12,7 +12,7 @@ Oedegaard, K., Fasmer, O. (2018). Depresjon: A Motor Activity Database of
 Depression Episodes in Unipolar and Bipolar Patients.
 Proceedings of the 9th ACM Multimedia Systems Conference (MMSys'18).
 
-**License:** Research/educational use only.
+
 
 ## Setup
 
