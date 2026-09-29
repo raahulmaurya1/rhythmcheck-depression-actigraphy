@@ -2,6 +2,9 @@
 # Internal spec file — not for public distribution
 depression-risk-project-spec.md
 
+# Dev helper script — not part of the deliverable
+quick_test.py
+
 # Raw dataset — license restricts redistribution (Garcia-Ceja et al., 2018)
 data/raw/
 

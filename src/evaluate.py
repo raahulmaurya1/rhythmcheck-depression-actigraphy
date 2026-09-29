@@ -47,11 +47,11 @@ from sklearn.impute import SimpleImputer
 
 from src.models import BaseModel, get_models
 
-# ── Published baseline ────────────────────────────────────────────────────────
+# -- Published baseline --------------------------------------------------------
 PUBLISHED_F1 = 0.73
 PUBLISHED_MCC = 0.44
 
-# ── Feature columns used in modelling ────────────────────────────────────────
+# -- Feature columns used in modelling ----------------------------------------
 FEATURE_COLS = [
     "mean_daily_activity",
     "std_daily_activity",
@@ -68,7 +68,7 @@ FEATURE_COLS = [
 ]
 
 
-# ── Bootstrap CI helper ───────────────────────────────────────────────────────
+# -- Bootstrap CI helper -------------------------------------------------------
 
 def _bootstrap_ci(
     y_true: np.ndarray,
@@ -104,7 +104,7 @@ def _bootstrap_ci(
     return float(np.quantile(scores, alpha)), float(np.quantile(scores, 1 - alpha))
 
 
-# ── Core LOSO-CV ─────────────────────────────────────────────────────────────
+# -- Core LOSO-CV -------------------------------------------------------------
 
 def run_loso_cv(
     feature_df: pd.DataFrame,
@@ -157,7 +157,7 @@ def run_loso_cv(
     fold_correct = np.empty(n, dtype=bool)
 
     for i, test_subject in enumerate(subjects):
-        # ── Split ─────────────────────────────────────────────────────────────
+        # -- Split -------------------------------------------------------------
         train_mask = feature_df["subject_id"] != test_subject
         test_mask = feature_df["subject_id"] == test_subject
 
@@ -167,7 +167,7 @@ def run_loso_cv(
         X_test = feature_df.loc[test_mask, feature_cols].values.astype(float)
         y_test = feature_df.loc[test_mask, "label"].values.astype(int)
 
-        # ── Impute then scale — fit ONLY on training fold ──────────────────
+        # -- Impute then scale — fit ONLY on training fold ------------------
         imputer = SimpleImputer(strategy="median")
         X_train = imputer.fit_transform(X_train)
         X_test = imputer.transform(X_test)
@@ -176,7 +176,7 @@ def run_loso_cv(
         X_train = scaler.fit_transform(X_train)
         X_test = scaler.transform(X_test)
 
-        # ── Fit and predict ───────────────────────────────────────────────
+        # -- Fit and predict -----------------------------------------------
         model.fit(X_train, y_train)
         pred = model.predict(X_test)[0]
         proba = model.predict_proba(X_test)[0, 1]  # P(depressed)
@@ -189,7 +189,7 @@ def run_loso_cv(
         if verbose and (i + 1) % 10 == 0:
             print(f"  [{model.name}] fold {i+1}/{n} done")
 
-    # ── Aggregate metrics ──────────────────────────────────────────────────
+    # -- Aggregate metrics --------------------------------------------------
     f1 = f1_score(y_true_all, y_pred_all, average="macro", zero_division=0)
     mcc = matthews_corrcoef(y_true_all, y_pred_all)
     acc = accuracy_score(y_true_all, y_pred_all)
@@ -198,7 +198,7 @@ def run_loso_cv(
     except ValueError:
         auc = float("nan")
 
-    # ── Bootstrap CIs ─────────────────────────────────────────────────────
+    # -- Bootstrap CIs -----------------------------------------------------
     f1_ci = _bootstrap_ci(
         y_true_all, y_pred_all,
         lambda yt, yp: f1_score(yt, yp, average="macro", zero_division=0),
@@ -226,7 +226,7 @@ def run_loso_cv(
     }
 
 
-# ── Evaluation runner ─────────────────────────────────────────────────────────
+# -- Evaluation runner ---------------------------------------------------------
 
 def evaluate_all_models(
     feature_df: pd.DataFrame,
@@ -263,7 +263,7 @@ def evaluate_all_models(
     return results
 
 
-# ── Reporting helpers ─────────────────────────────────────────────────────────
+# -- Reporting helpers ---------------------------------------------------------
 
 def _print_result(result: dict) -> None:
     """Print a clean summary for one model's LOSO-CV results."""
@@ -272,7 +272,7 @@ def _print_result(result: dict) -> None:
     n_correct = result["fold_correct"].sum()
     n_total = len(result["fold_correct"])
 
-    print(f"\n── {result['model_name']} ──")
+    print(f"\n-- {result['model_name']} --")
     print(f"  F1  (macro):  {result['f1']:.3f}  [95% CI: {f1_lo:.3f} – {f1_hi:.3f}]")
     print(f"  MCC:          {result['mcc']:.3f}  [95% CI: {mcc_lo:.3f} – {mcc_hi:.3f}]")
     print(f"  Accuracy:     {result['accuracy']:.3f}  ({n_correct}/{n_total} correct)")
@@ -313,7 +313,7 @@ def _print_baseline_comparison(results: list[dict]) -> None:
     f1_diff = best["f1"] - PUBLISHED_F1
     mcc_diff = best["mcc"] - PUBLISHED_MCC
 
-    print(f"\n── Comparison to published baseline (Garcia-Ceja et al., 2018) ──")
+    print(f"\n-- Comparison to published baseline (Garcia-Ceja et al., 2018) --")
     print(f"  Published:  F1 = {PUBLISHED_F1:.2f},  MCC = {PUBLISHED_MCC:.2f}")
     print(
         f"  Best model ({best['model_name']}):  "
@@ -321,9 +321,9 @@ def _print_baseline_comparison(results: list[dict]) -> None:
         f"MCC = {best['mcc']:.3f} ({mcc_diff:+.3f})"
     )
     if f1_diff >= 0:
-        print(f"  ✓ Meets or exceeds the published F1 baseline.")
+        print(f"  OK Meets or exceeds the published F1 baseline.")
     else:
-        print(f"  ✗ Does not meet the published F1 baseline.")
+        print(f"  FAIL Does not meet the published F1 baseline.")
         print(
             "    This is an honest result. Possible reasons: different feature set, "
             "slightly different preprocessing, or sampling variability on n=55."

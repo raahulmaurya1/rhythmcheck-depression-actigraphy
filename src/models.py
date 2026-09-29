@@ -30,7 +30,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.neural_network import MLPClassifier
 
 
-# ── Shared interface ──────────────────────────────────────────────────────────
+# -- Shared interface ----------------------------------------------------------
 
 class BaseModel(ABC):
     """
@@ -56,7 +56,7 @@ class BaseModel(ABC):
         """Human-readable model name for logging/reporting."""
 
 
-# ── Logistic Regression ───────────────────────────────────────────────────────
+# -- Logistic Regression -------------------------------------------------------
 
 class LogisticRegressionModel(BaseModel):
     """
@@ -111,7 +111,7 @@ class LogisticRegressionModel(BaseModel):
         return self._model
 
 
-# ── MLP ───────────────────────────────────────────────────────────────────────
+# -- MLP -----------------------------------------------------------------------
 
 class MLPModel(BaseModel):
     """
@@ -179,7 +179,7 @@ class MLPModel(BaseModel):
         return self._model
 
 
-# ── Factory helper ────────────────────────────────────────────────────────────
+# -- Factory helper ------------------------------------------------------------
 
 def get_models() -> list[BaseModel]:
     """

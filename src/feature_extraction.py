@@ -44,13 +44,13 @@ from typing import Optional
 import numpy as np
 import pandas as pd
 
-# ── Constants ─────────────────────────────────────────────────────────────────
+# -- Constants -----------------------------------------------------------------
 NIGHT_START_HOUR = 20   # 20:00 — start of nighttime window
 NIGHT_END_HOUR = 8      # 08:00 — end   of nighttime window (exclusive)
 SLEEP_THRESHOLD = 10    # activity counts below this treated as "sleep/rest"
 
 
-# ── Core feature functions ────────────────────────────────────────────────────
+# -- Core feature functions ----------------------------------------------------
 
 def _to_hourly(minute_series: pd.Series, timestamps: pd.Series) -> pd.Series:
     """
@@ -209,7 +209,7 @@ def compute_sleep_efficiency(minute_series: pd.Series, timestamps: pd.Series) ->
     return float((night < SLEEP_THRESHOLD).mean())
 
 
-# ── Per-subject feature extraction ────────────────────────────────────────────
+# -- Per-subject feature extraction --------------------------------------------
 
 def extract_subject_features(
     subject_id: str,
@@ -254,7 +254,7 @@ def extract_subject_features(
     return features
 
 
-# ── Build full feature matrix ─────────────────────────────────────────────────
+# -- Build full feature matrix -------------------------------------------------
 
 def build_feature_matrix(
     activity_df: pd.DataFrame,
@@ -321,7 +321,7 @@ def build_feature_matrix(
     return feature_df
 
 
-# ── Feature dictionary ────────────────────────────────────────────────────────
+# -- Feature dictionary --------------------------------------------------------
 
 def _write_feature_dictionary(output_dir: Path) -> None:
     """Write feature_dictionary.md explaining each column in plain language."""

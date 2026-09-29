@@ -52,7 +52,7 @@ from src.models import BaseModel, LogisticRegressionModel, MLPModel
 from src.evaluate import FEATURE_COLS
 
 
-# ── Friendly feature labels for plots ────────────────────────────────────────
+# -- Friendly feature labels for plots ----------------------------------------
 FEATURE_LABELS = {
     "mean_daily_activity": "Mean daily activity",
     "std_daily_activity":  "Std daily activity",
@@ -189,7 +189,7 @@ def run_shap(
     # Human-readable labels
     labels = [FEATURE_LABELS.get(c, c) for c in feature_cols]
 
-    # ── Mean |SHAP| ranking ──────────────────────────────────────────────────
+    # -- Mean |SHAP| ranking --------------------------------------------------
     mean_abs = np.abs(shap_values).mean(axis=0)
     importance = pd.Series(mean_abs, index=labels).sort_values(ascending=False)
     feature_ranking = [
@@ -200,7 +200,7 @@ def run_shap(
     for rank, (feat, val) in enumerate(importance.items(), 1):
         print(f"  {rank:>2}. {feat:<35} {val:.4f}")
 
-    # ── Bar chart ─────────────────────────────────────────────────────────────
+    # -- Bar chart -------------------------------------------------------------
     bar_path = output_dir / "shap_summary_bar.png"
     fig, ax = plt.subplots(figsize=(8, 5))
     colors = ["#e05c5c" if v > 0 else "#5c8ae0" for v in importance.values]
@@ -219,7 +219,7 @@ def run_shap(
     plt.close(fig)
     print(f"[explainability] Saved bar chart → {bar_path}")
 
-    # ── Beeswarm / summary plot ───────────────────────────────────────────────
+    # -- Beeswarm / summary plot -----------------------------------------------
     beeswarm_path = output_dir / "shap_beeswarm.png"
     fig, ax = plt.subplots(figsize=(8, 6))
 

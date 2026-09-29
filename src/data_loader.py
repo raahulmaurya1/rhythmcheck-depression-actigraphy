@@ -28,7 +28,7 @@ from typing import Tuple
 
 import pandas as pd
 
-# ── Constants ────────────────────────────────────────────────────────────────
+# -- Constants ----------------------------------------------------------------
 EXPECTED_CONDITION_COUNT = 23
 EXPECTED_CONTROL_COUNT = 32
 
@@ -39,7 +39,7 @@ REQUIRED_SCORES_COLS = {
 }
 
 
-# ── Internal helpers ─────────────────────────────────────────────────────────
+# -- Internal helpers ---------------------------------------------------------
 
 def _extract_subject_key(filepath: Path) -> str:
     """
@@ -111,7 +111,7 @@ def _load_scores(raw_dir: Path) -> pd.DataFrame:
     return scores
 
 
-# ── Public API ────────────────────────────────────────────────────────────────
+# -- Public API ----------------------------------------------------------------
 
 def load_dataset(raw_dir: str | Path = "data/raw") -> Tuple[pd.DataFrame, pd.DataFrame]:
     """
@@ -141,7 +141,7 @@ def load_dataset(raw_dir: str | Path = "data/raw") -> Tuple[pd.DataFrame, pd.Dat
     condition_dir = raw_dir / "condition"
     control_dir = raw_dir / "control"
 
-    # ── Validate directories exist ───────────────────────────────────────────
+    # -- Validate directories exist -------------------------------------------
     for d in (condition_dir, control_dir):
         if not d.exists():
             raise FileNotFoundError(
@@ -149,7 +149,7 @@ def load_dataset(raw_dir: str | Path = "data/raw") -> Tuple[pd.DataFrame, pd.Dat
                 "Please extract the Depresjon dataset into data/raw/ before running."
             )
 
-    # ── Collect file lists ───────────────────────────────────────────────────
+    # -- Collect file lists ---------------------------------------------------
     condition_files = sorted(condition_dir.glob("condition_*.csv"))
     control_files = sorted(control_dir.glob("control_*.csv"))
 
@@ -168,14 +168,14 @@ def load_dataset(raw_dir: str | Path = "data/raw") -> Tuple[pd.DataFrame, pd.Dat
         )
 
     print(
-        f"[data_loader] Found {n_cond} condition files and {n_ctrl} control files. ✓"
+        f"[data_loader] Found {n_cond} condition files and {n_ctrl} control files. OK"
     )
 
-    # ── Load scores ──────────────────────────────────────────────────────────
+    # -- Load scores ----------------------------------------------------------
     scores = _load_scores(raw_dir)
     scores_index = scores.set_index("number")
 
-    # ── Load activity CSVs ────────────────────────────────────────────────────
+    # -- Load activity CSVs ----------------------------------------------------
     frames: list[pd.DataFrame] = []
     subject_records: list[dict] = []
 
@@ -220,14 +220,14 @@ def load_dataset(raw_dir: str | Path = "data/raw") -> Tuple[pd.DataFrame, pd.Dat
 
     print(
         f"[data_loader] Loaded {n_subjects} subjects total: "
-        f"{n_depressed} depressed (condition), {n_control} healthy (control). ✓"
+        f"{n_depressed} depressed (condition), {n_control} healthy (control). OK"
     )
     print(
         f"[data_loader] Activity records: {len(activity_df):,} rows "
         f"across {n_subjects} subjects."
     )
 
-    # ── Note condition-group heterogeneity (spec requirement) ────────────────
+    # -- Note condition-group heterogeneity (spec requirement) ----------------
     afftype_counts = (
         subject_df[subject_df["group"] == "condition"]["afftype"]
         .value_counts()
