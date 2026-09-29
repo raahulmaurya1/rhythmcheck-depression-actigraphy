@@ -207,7 +207,7 @@ def run_shap(
     ax.barh(importance.index[::-1], importance.values[::-1], color=colors[::-1])
     ax.set_xlabel("Mean |SHAP value|", fontsize=11)
     ax.set_title(
-        f"Feature Importance — {model.name}\n"
+        f"Feature Importance  {model.name}\n"
         f"(SHAP, fit on full dataset, n={len(feature_df)})",
         fontsize=11,
     )
@@ -245,7 +245,7 @@ def run_shap(
     ax.axvline(0, color="black", linewidth=0.8, linestyle="--")
     ax.set_xlabel("SHAP value (impact on P(depressed))", fontsize=10)
     ax.set_title(
-        f"SHAP Beeswarm — {model.name}\n"
+        f"SHAP Beeswarm  {model.name}\n"
         f"Colour: feature value (red=high, blue=low)",
         fontsize=10,
     )
